@@ -1,0 +1,674 @@
+swagger: '2.0'
+info:
+  description: 'API que contiene la funcionalidad necesaria referente al vehículo. Permite acceder a información del vehículo (interna o externa) por matrícula o bastidor, así como a cierta información relativa a los dispositivos instalados en el vehículo'
+  version: 1.0.1
+  title: AUTOS - ESTRUCTURALES - Vehiculos
+  contact:
+    name: Javier Moreno Lozano
+    email: jmoreno@mutua.es
+  x-ibm-name: autos-vehiculos
+host: $(catalog.host)
+basePath: /autos-vehiculos/api/v1
+tags:
+  - name: Vehiculos
+    description: 'Recoge la funcionalidad relacionada con la operativa de los Catalogos de vehículos - marcas, modelos, etc'
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+security:
+  - clientIdHeader: []
+paths:
+  /datos-vehiculos-by-matricula:
+    get:
+      tags:
+        - Vehiculos
+      summary: Consulta de los datos de un vehículo por matrícula
+      description: Operación que permite realizar la consulta de los datos de un vehículo por matrícula
+      operationId: recuperarDatosPorMatricula
+      parameters:
+        - name: matricula
+          in: query
+          description: Matrícula del vehículo
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 200 OK - Retorna los datos de vehículos registrados en la base de datos de Mutua Madrileña
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DatosBasicosVehiculo'
+        '400':
+          description: 400 Bad Request
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '404':
+          description: 404 Not Found
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '500':
+          description: 500 Internal Error
+          schema:
+            $ref: '#/definitions/Mensajes'
+  /datos-vehiculos-by-bastidor:
+    get:
+      tags:
+        - Vehiculos
+      summary: Consulta de los datos de un vehículo por número de bastidor
+      description: Operación que permite realizar la consulta de los datos de un vehículo por número de bastidor
+      operationId: recuperarDatosPorBastidor
+      parameters:
+        - name: bastidor
+          in: query
+          description: Bastidor del vehículo
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 200 OK - Retorna los datos de vehículos registrados en la base de datos de Mutua Madrileña
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DatosBasicosVehiculo'
+        '400':
+          description: 400 Bad Request
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '404':
+          description: 404 Not Found
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '500':
+          description: 500 Internal Error
+          schema:
+            $ref: '#/definitions/Mensajes'
+  /tipos-vehiculos:
+    get:
+      tags:
+        - Vehiculos
+      summary: Consulta los tipos de vehículos disponibles
+      description: Operación que permite realizar la consulta de los tipos de vehículos que están disponibles
+      operationId: recuperarTipoVehiculo
+      parameters: []
+      responses:
+        '200':
+          description: 200 OK - Retorna la lista de tipos de vehículo
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TipoVehiculo'
+        '400':
+          description: 400 Bad Request
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '404':
+          description: 404 Not Found
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '500':
+          description: 500 Internal Error
+          schema:
+            $ref: '#/definitions/Mensajes'
+  '/tipos-vehiculos/{codigoTipoVehiculo}/marcas':
+    get:
+      tags:
+        - Vehiculos
+      summary: Consulta las marcas disponibles para un tipo de vehículo
+      description: Operación que permite realizar la consulta de las marcas disponibles para un determinado tipo y subtipo de vehículo
+      operationId: recuperarMarcaVehiculo
+      parameters:
+        - name: codigoTipoVehiculo
+          in: path
+          description: tipo de vehiculo
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 200 OK - Retorna la lista de marcas de vehículo
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MarcaVehiculo'
+        '400':
+          description: 400 Bad Request
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '404':
+          description: 404 Not Found
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '500':
+          description: 500 Internal Error
+          schema:
+            $ref: '#/definitions/Mensajes'
+  '/tipos-vehiculos/{codigoTipoVehiculo}/marcas/{codigoMarca}/modelos':
+    get:
+      tags:
+        - Vehiculos
+      summary: 'Consulta la lista de modelos disponibles para una marca, tipo y subtipo de vehículo'
+      description: 'Operación que permite consultar la lista de modelos  disponibles para un tipo, subtipo y marca de vehículo'
+      operationId: recuperarModeloVehiculo
+      parameters:
+        - name: codigoTipoVehiculo
+          in: path
+          description: tipo de vehiculo
+          required: true
+          type: string
+        - name: codigoMarca
+          in: path
+          description: Marca del vehículo
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 200 OK - Retorna la lista de modelos de vehículo
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ModeloVehiculo'
+        '400':
+          description: 400 Bad Request
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '404':
+          description: 404 Not Found
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '500':
+          description: 500 Internal Error
+          schema:
+            $ref: '#/definitions/Mensajes'
+  '/tipos-vehiculos/{codigoTipoVehiculo}/marcas/{codigoMarca}/modelos/{codigoModelo}/submodelos':
+    get:
+      tags:
+        - Vehiculos
+      summary: Consulta la lista de submodelos disponibles para un modelo de una marca de un tipo y subtipo de vehículo
+      description: Operación que permite consultar la lista de opciones de submodelos disponibles para un modelo concreto de una marca y un tipo y subtipo de vehículo
+      operationId: recuperarSubmodeloVehiculo
+      parameters:
+        - name: codigoTipoVehiculo
+          in: path
+          description: tipo de vehiculo
+          required: true
+          type: string
+        - name: codigoMarca
+          in: path
+          description: identificador de la marca del vehículo
+          required: true
+          type: string
+        - name: codigoModelo
+          in: path
+          description: identificador del modelo del vehículo para una marca concreta
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 200 OK - Retorna la lista de submodelos de vehículo
+          schema:
+            $ref: '#/definitions/SubmodelosVehiculo'
+        '400':
+          description: 400 Bad Request
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '404':
+          description: 404 Not Found
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '500':
+          description: 500 Internal Error
+          schema:
+            $ref: '#/definitions/Mensajes'
+  '/tipos-vehiculos/{codigoTipoVehiculo}/marcas/{codigoMarca}/modelos/{codigoModelo}/submodelos/{codigoSubmodelo}/datos-tecnicos':
+    get:
+      tags:
+        - Vehiculos
+      summary: 'Consulta la lista de potencias, cilindradas, numero de puertas y combustibles disponibles para un submodelo concreto.'
+      description: 'Operación que permite consultar la lista de opciones de filtrado disponibles para un submodelo concreto de tipo, marca y modelo.'
+      operationId: recuperarGamasVehiculo
+      parameters:
+        - name: codigoTipoVehiculo
+          in: path
+          description: tipo de vehiculo
+          required: true
+          type: string
+        - name: codigoMarca
+          in: path
+          description: identificador de la marca del vehículo
+          required: true
+          type: string
+        - name: codigoModelo
+          in: path
+          description: identificador del modelo del vehículo para una marca concreta
+          required: true
+          type: string
+        - name: codigoSubmodelo
+          in: path
+          description: identificador del submodelo del vehículo para una marca y modelo concretos
+          required: true
+          type: string
+        - name: anioMatriculacion
+          in: query
+          description: Año de matriculación del vehículo
+          required: false
+          type: integer
+          format: int32
+        - name: potencia
+          in: query
+          description: Potencia del vehículo buscado
+          required: false
+          type: integer
+          format: int32
+        - name: cilindrada
+          in: query
+          description: Cilindrada del vehículo buscado
+          required: false
+          type: integer
+          format: int32
+        - name: numeroDePuertas
+          in: query
+          description: Número de puertas del vehículo buscado
+          required: false
+          type: integer
+          format: int32
+        - name: combustible
+          in: query
+          description: Tipo de combustible del vehículo buscado
+          required: false
+          type: string
+      responses:
+        '200':
+          description: 200 OK - Retorna la lista de submodelos de vehículo
+          schema:
+            $ref: '#/definitions/DatosTecnicosSubmodeloVehiculo'
+        '400':
+          description: 400 Bad Request
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '404':
+          description: 404 Not Found
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '500':
+          description: 500 Internal Error
+          schema:
+            $ref: '#/definitions/Mensajes'
+  '/tipos-vehiculos/{codigoTipoVehiculo}/marcas/{codigoMarca}/modelos/{codigoModelo}/terminaciones/':
+    get:
+      tags:
+        - Vehiculos
+      summary: 'Consulta la lista de terminaciones disponibles para un tipo, marca y modelo concreto con posibilidad de filtrar por otros campos adicionales'
+      description: 'Operación que permite listar las terminaciones disponibles para un tipo, marca y modelo pudiendo filtrar adicionalmente por submodelo, año de matriculación, potencia, cilindrada, número de puertas o combustible'
+      operationId: recuperarTerminacionesVehiculo
+      parameters:
+        - name: codigoTipoVehiculo
+          in: path
+          description: tipo de vehiculo
+          required: true
+          type: string
+        - name: codigoMarca
+          in: path
+          description: identificador de la marca del vehículo
+          required: true
+          type: string
+        - name: codigoModelo
+          in: path
+          description: identificador del modelo del vehículo para una marca concreta
+          required: true
+          type: string
+        - name: codigoSubmodelo
+          in: query
+          description: identificador del submodelo del vehículo para un modelo concreto
+          required: false
+          type: string
+        - name: anioMatriculacion
+          in: query
+          description: Año de matriculación del vehículo
+          required: false
+          type: integer
+          format: int32
+        - name: potencia
+          in: query
+          description: Potencia del vehículo buscado
+          required: false
+          type: integer
+          format: int32
+        - name: cilindrada
+          in: query
+          description: Cilindrada del vehículo buscado
+          required: false
+          type: integer
+          format: int32
+        - name: numeroDePuertas
+          in: query
+          description: Número de puertas del vehículo buscado
+          required: false
+          type: integer
+          format: int32
+        - name: combustible
+          in: query
+          description: Tipo de combustible del vehículo buscado
+          required: false
+          type: string
+      responses:
+        '200':
+          description: 200 OK - Retorna el detalle de una terminación de vehículo según el año indicado
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DatosBasicosVehiculo'
+        '400':
+          description: 400 Bad Request
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '404':
+          description: 404 Not Found
+          schema:
+            $ref: '#/definitions/Mensajes'
+        '500':
+          description: 500 Internal Error
+          schema:
+            $ref: '#/definitions/Mensajes'
+securityDefinitions:
+  clientIdHeader:
+    description: student
+    type: apiKey
+    name: X-IBM-Client-Id
+    in: header
+definitions:
+  TipoVehiculo:
+    properties:
+      codigoTipoVehiculo:
+        type: string
+        example: COCHE
+        description: Código del tipo de vehículo
+        enum:
+          - MOTO
+          - COCHE
+          - CAMION
+          - REMOLQUE
+      descripcionTipoVehiculo:
+        type: string
+        example: Coche
+        description: Nombre del tipo de vehículo
+    description: Tipo de vehículo
+  MarcaVehiculo:
+    properties:
+      codigoMarca:
+        type: string
+        example: OPEL
+        description: Código de la marca de vehículo
+      descripcionMarca:
+        type: string
+        example: Opel
+        description: Nombre de la marca de vehículo
+    description: Marca de vehículo
+  ModeloVehiculo:
+    properties:
+      codigoModelo:
+        type: string
+        example: ZAFIRA
+        description: Código de modelo de vehículo
+      descripcionModelo:
+        type: string
+        example: Zafira
+        description: Nombre de modelo de vehículo
+    description: Modelo de vehículo
+  SubmodeloVehiculo:
+    properties:
+      codigoSubmodelo:
+        type: string
+        example: CONCEPT
+        description: Código de submodelo de vehículo
+      descripcionSubmodelo:
+        type: string
+        example: Concept
+        description: Nombre de submodelo de vehículo
+    description: Submodelo de vehículo
+  PotenciaVehiculo:
+    properties:
+      potencia:
+        type: integer
+        example: 136
+        description: Potencia del vehículo en caballos de vapor
+    description: Potencia del vehículo
+  CilindradaVehiculo:
+    properties:
+      cilindrada:
+        type: integer
+        example: 1600
+        description: Cilindrada del vehículo en centimetros cúbicos
+    description: Cilindrada del vehículo
+  NumeroDePuertasVehiculo:
+    properties:
+      numeroDePuertas:
+        type: integer
+        example: 5
+        description: Número de puertas del vehículo
+    description: Numero de puertas del vehículo
+  CombustibleVehiculo:
+    properties:
+      id:
+        type: string
+        example: GASOLINA
+        description: Código de combustible de vehículo
+        enum:
+          - GASOLINA
+          - DIESEL
+          - HIBRIDO
+      combustible:
+        type: string
+        example: Gasolina
+        description: Nombre de combustible de vehículo
+    description: Combustible del vehículo
+  DatosBasicosVehiculo:
+    required:
+      - codigoVehiculo
+      - codigoMarca
+      - codigoModelo
+      - descripcionMarca
+      - descripcionModelo
+      - matricula
+      - numeroBastidor
+      - tipoVehiculo
+    properties:
+      tipoVehiculo:
+        type: string
+        example: COCHE
+        description: 'Especifica el tipo de vehículo: MOTO, COCHE, CAMION, REMOLQUE'
+        enum:
+          - MOTO
+          - COCHE
+          - CAMION
+          - REMOLQUE
+      codigoVehiculo:
+        type: string
+        example: 000300350010021997
+        description: Código interno usado por Mutua Madrileña para identificar al vehículo
+      codigoMarca:
+        type: string
+        example: TOYOTA
+        description: Código de la marca del vehículo
+      descripcionMarca:
+        type: string
+        example: Toyota
+        description: Descripción de la marca del vehículo
+      codigoModelo:
+        type: string
+        example: YARIS
+        description: Código del modelo del vehículo
+      descripcionModelo:
+        type: string
+        example: Yaris
+        description: Descripción del modelo del vehículo
+      codigoSubModelo:
+        type: string
+        example: SEDAN
+        description: Código del submodelo del vehículo
+      descripcionSubModelo:
+        type: string
+        example: Sedan
+        description: Descripción del submodelo del vehículo
+      codigoTerminacion:
+        type: string
+        example: ACTIVE_PLUS
+        description: Código de la terminacion del vehículo
+      terminacion:
+        type: string
+        example: Active Plus
+        description: Terminación del vehículo
+      matricula:
+        type: string
+        example: 4676NAH
+        description: Matricula del vehículo
+      numeroBastidor:
+        type: string
+        example: VSSZZZ6KZ1R149943
+        description: Numero del bastidor del vehículo
+      combustible:
+        type: string
+        example: HIBRIDO
+        description: Tipo de combustible que usa el vehículo
+        enum:
+          - GASOLINA
+          - DIESEL
+          - HIBRIDO
+      potencia:
+        type: integer
+        format: int32
+        example: 136
+        description: Potencia del motor
+      cilindrada:
+        type: integer
+        format: int32
+        example: 1600
+        description: Cilindrada del motor
+      numeroDePuertas:
+        type: integer
+        format: int32
+        example: 5
+        description: Número de puertas del vehículo
+      fabricacion:
+        type: integer
+        example: 1997
+        description: Año de fabricación del vehículo
+      valorVehiculo:
+        type: integer
+        example: 21587
+        description: Valor del vehículo en Euros
+      peso:
+        type: integer
+        format: int32
+        example: 1100
+        description: Peso del vehículo
+    description: Agrupa los datos básicos de un vehículo
+  Mensajes:
+    properties:
+      mensaje:
+        type: array
+        description: Lista de mensajes al consumidor de la API
+        items:
+          $ref: '#/definitions/DatosMensaje'
+    description: Objeto que permite agrupar los datos relativos a los mensajes.
+  DatosMensaje:
+    properties:
+      campo:
+        type: string
+        example: id-poliza
+        description: 'Nombre del campo sobre el que se informa: del error producido en el caso de mensaje de error, del objeto actualizado/eliminado/creado en caso de actualización/eliminación/creación'
+      codigo:
+        type: string
+        example: ''
+        description: Codigo descriptivo del mensaje al consumidor de la API
+      descripcion:
+        type: string
+        example: ''
+        description: Descripción del mensaje para el consumidor de la API
+      ampliacionInformacion:
+        type: string
+        example: ''
+        description: 'Detalle ampliado sobre el mensaje al consumidor. En el caso de fallo en la creación de un objeto, informa sobre el detalle de este fallo. En el caso de éxito de creación de un objeto, contiene un json con el id del objeto creado y el path relativo /entidad/{id-entidad}.'
+    description: Objeto que permite agrupar los datos de mensaje.
+  SubmodelosVehiculo:
+    properties:
+      submodelosVehiculo:
+        type: array
+        items:
+          $ref: '#/definitions/SubmodeloVehiculo'
+      potenciasVehiculo:
+        type: array
+        items:
+          $ref: '#/definitions/PotenciaVehiculo'
+      cilindradasVehiculo:
+        type: array
+        items:
+          $ref: '#/definitions/CilindradaVehiculo'
+      numeroDePuertasVehiculo:
+        type: array
+        items:
+          $ref: '#/definitions/NumeroDePuertasVehiculo'
+      combustiblesVehiculo:
+        type: array
+        items:
+          $ref: '#/definitions/CombustibleVehiculo'
+    additionalProperties: false
+    description: 'Lista de submodelos y listas para facilitar las busquedas: potencias, cilindradas y numero de puertas.'
+    required:
+      - submodelosVehiculo
+      - potenciasVehiculo
+      - cilindradasVehiculo
+      - numeroDePuertasVehiculo
+      - combustiblesVehiculo
+  DatosTecnicosSubmodeloVehiculo:
+    properties:
+      potenciasVehiculo:
+        type: array
+        items:
+          $ref: '#/definitions/PotenciaVehiculo'
+      cilindradasVehiculo:
+        type: array
+        items:
+          $ref: '#/definitions/CilindradaVehiculo'
+      numeroDePuertasVehiculo:
+        type: array
+        items:
+          $ref: '#/definitions/NumeroDePuertasVehiculo'
+      combustiblesVehiculo:
+        type: array
+        items:
+          $ref: '#/definitions/CombustibleVehiculo'
+    additionalProperties: false
+    description: 'Lista de datos técnicos de submodelos para facilitar las busquedas: potencias, cilindradas y numero de puertas.'
+    required:
+      - potenciasVehiculo
+      - cilindradasVehiculo
+      - numeroDePuertasVehiculo
+      - combustiblesVehiculo
+x-ibm-configuration:
+  testable: true
+  enforced: true
+  cors:
+    enabled: true
+  assembly:
+    execute:
+      - proxy:
+          title: proxy
+          timeout: 60
+          verb: keep
+          cache-response: protocol
+          cache-ttl: 900
+          version: 1.0.0
+          target-url: $(target-url)$(request.path)
+  gateway: datapower-gateway
+  properties:
+    target-url:
+      value: 'http://scs-ws-proxy-apparq-uat.cloudpre.mutua.es/wsproxy'
+      description: URL del Mock Server
+      encoded: false
+  categories:
+    - / AUTOS / DatosBasicosVehiculo
+    - / AUTOS / Mensajes
+    - / AUTOS / DatosMensaje
+  phase: realized
